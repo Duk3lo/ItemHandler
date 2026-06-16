@@ -1,0 +1,58 @@
+settings:
+  give-items-on-join: true
+  clear-inventory-on-join: true
+
+items:
+  selector:
+    material: NETHER_STAR
+    amount: 1
+    slot: 4
+    locked-slot: true
+    prevent-move: true
+    prevent-drop: true
+    name: "&6Lobby &fSelector"
+    lore:
+      - "&7Click derecho para abrir"
+      - "&fEjecuta comandos y abre menús"
+    glow: true
+    unbreakable: true
+    custom-model-data: 1001
+    enchants:
+      - "DURABILITY:1"
+    commands:
+      player:
+        - "say abriste el selector"
+      console:
+        - "broadcast &a{player} usó el selector"
+
+  spawn:
+    material: COMPASS
+    amount: 1
+    slot: 0
+    locked-slot: true
+    prevent-move: true
+    prevent-drop: true
+    name: "&bSpawn"
+    lore:
+      - "&7Te lleva al spawn"
+    glow: false
+    unbreakable: true
+    commands:
+      player:
+        - "spawn"
+      console:
+        - "say {player} pidió ir al spawn"
+
+cycles:
+  promo:
+    enabled: true
+    slot: 8
+    interval-ms: 1500
+    items:
+      - "selector"
+      - "spawn"
+    commands:
+      player:
+        - "title {player} actionbar &eCambiando item: {item}"
+      console:
+        - "say {player} cambió a {item} en el slot {slot}"

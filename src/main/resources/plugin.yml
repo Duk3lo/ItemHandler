@@ -1,0 +1,15 @@
+name: LobbyPlugin
+version: '${version}'
+
+main: org.astral.itemhandler.ItemHandler
+api-version: '26.1.2'
+load: POSTWORLD
+folia-supported: true
+commands:
+  itemhandler:
+    description: Administra ItemHandler
+    usage: /itemhandler reload
+
+permissions:
+  itemhandler.admin:
+    default: op

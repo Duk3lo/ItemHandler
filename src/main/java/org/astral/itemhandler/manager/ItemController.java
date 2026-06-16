@@ -187,7 +187,7 @@ public final class ItemController {
         }
     }
 
-    private String parsePlaceholders(String text, @NonNull Player player, String itemId, int slot, String cycleId) {
+    private @NonNull String parsePlaceholders(String text, @NonNull Player player, String itemId, int slot, String cycleId) {
         String result = text;
         result = result.replace("{player}", player.getName());
         result = result.replace("{uuid}", player.getUniqueId().toString());

@@ -1,5 +1,7 @@
 package org.astral.itemhandler.config;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.astral.itemhandler.ItemHandler;
 import org.astral.itemhandler.model.ItemCycle;
 import org.astral.itemhandler.model.ManagedItem;
@@ -58,12 +60,28 @@ public final class ItemHandlerConfig {
             boolean unbreakable = sec.getBoolean("unbreakable", false);
             boolean preventMove = sec.getBoolean("prevent-move", true);
             boolean preventDrop = sec.getBoolean("prevent-drop", true);
+            boolean giveOnJoin = sec.getBoolean("give-on-join", true);
+            String toggleTo = sec.getString("toggle-to", null);
 
             Integer slot = sec.contains("slot") ? sec.getInt("slot") : null;
             Integer customModelData = sec.contains("custom-model-data") ? sec.getInt("custom-model-data") : null;
 
             List<String> clickPlayerCommands = colorizeList(sec.getStringList("commands.player"));
             List<String> clickConsoleCommands = colorizeList(sec.getStringList("commands.console"));
+
+            String clickSound = null;
+            float soundVolume = 1.0f;
+            float soundPitch = 1.0f;
+
+            if (sec.contains("sound")) {
+                if (sec.isConfigurationSection("sound")) {
+                    clickSound = sec.getString("sound.type");
+                    soundVolume = (float) sec.getDouble("sound.volume", 1.0);
+                    soundPitch = (float) sec.getDouble("sound.pitch", 1.0);
+                } else {
+                    clickSound = sec.getString("sound");
+                }
+            }
 
             Map<Enchantment, Integer> enchants = parseEnchantments(sec.getStringList("enchants"));
 
@@ -77,11 +95,16 @@ public final class ItemHandlerConfig {
                     unbreakable,
                     preventMove,
                     preventDrop,
+                    giveOnJoin,
+                    toggleTo,
                     slot,
                     customModelData,
                     enchants,
                     clickPlayerCommands,
-                    clickConsoleCommands
+                    clickConsoleCommands,
+                    clickSound,
+                    soundVolume,
+                    soundPitch
             ));
         }
     }
@@ -122,14 +145,25 @@ public final class ItemHandlerConfig {
     private @NonNull Map<Enchantment, Integer> parseEnchantments(@NonNull List<String> raw) {
         Map<Enchantment, Integer> result = new LinkedHashMap<>();
 
+        var registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+
         for (String line : raw) {
             if (line == null || line.isBlank()) continue;
 
             String[] split = line.split(":");
-            String enchName = split[0].trim().toUpperCase(Locale.ROOT);
+            String enchName = split[0].trim().toLowerCase(Locale.ROOT);
 
-            Enchantment enchantment = Enchantment.getByName(enchName);
-            if (enchantment == null) continue;
+            if (enchName.equals("durability")) enchName = "unbreaking";
+            if (enchName.equals("damage_all")) enchName = "sharpness";
+            if (enchName.equals("dig_speed")) enchName = "efficiency";
+
+            org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.minecraft(enchName);
+            Enchantment enchantment = registry.get(key);
+
+            if (enchantment == null) {
+                plugin.getLogger().warning("No se encontró el encantamiento: " + enchName);
+                continue;
+            }
 
             int level = 1;
             if (split.length > 1) {
@@ -155,7 +189,8 @@ public final class ItemHandlerConfig {
 
     private @NonNull String colorize(String text) {
         if (text == null) return "";
-        return org.bukkit.ChatColor.translateAlternateColorCodes('&', text);
+        net.kyori.adventure.text.Component component = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+        return net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().serialize(component);
     }
 
     public boolean isGiveItemsOnJoin() {

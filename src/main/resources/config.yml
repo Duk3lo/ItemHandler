@@ -7,13 +7,12 @@ items:
     material: NETHER_STAR
     amount: 1
     slot: 4
-    locked-slot: true
     prevent-move: true
     prevent-drop: true
     name: "&6Lobby &fSelector"
     lore:
       - "&7Click derecho para abrir"
-      - "&fEjecuta comandos y abre menús"
+      - "&fAbre el menú de red"
     glow: true
     unbreakable: true
     custom-model-data: 1001
@@ -21,38 +20,70 @@ items:
       - "DURABILITY:1"
     commands:
       player:
-        - "say abriste el selector"
-      console:
-        - "broadcast &a{player} usó el selector"
+        - "/zmenu open zmenu:network_menu"
+      console: []
 
-  spawn:
-    material: COMPASS
+  spawn_item:
+    material: ENDER_PEARL
     amount: 1
     slot: 0
-    locked-slot: true
     prevent-move: true
     prevent-drop: true
-    name: "&bSpawn"
+    name: "&aVolver al Spawn"
     lore:
-      - "&7Te lleva al spawn"
+      - "&7Click derecho para regresar"
     glow: false
     unbreakable: true
+    sound:
+      type: "entity_enderman_teleport"
+      volume: 1.0
+      pitch: 1.0
     commands:
       player:
-        - "spawn"
-      console:
-        - "say {player} pidió ir al spawn"
+        - "/lobby spawn"
+      console: []
+
+  visibility_on:
+    material: LIME_DYE
+    amount: 1
+    slot: 8
+    prevent-move: true
+    prevent-drop: true
+    give-on-join: false
+    name: "&aVer jugadores"
+    lore:
+      - "&7Click derecho para ocultarlos"
+    glow: false
+    unbreakable: true
+    toggle-to: "visibility_off"
+    commands:
+      player:
+        - "/lobby players hide"
+      console: []
+
+  visibility_off:
+    material: GRAY_DYE
+    amount: 1
+    slot: 8
+    prevent-move: true
+    prevent-drop: true
+    give-on-join: false
+    name: "&7Ocultar jugadores"
+    lore:
+      - "&7Click derecho para mostrarlos"
+    glow: false
+    unbreakable: true
+    toggle-to: "visibility_on"
+    commands:
+      player:
+        - "/lobby players show"
+      console: []
 
 cycles:
-  promo:
+  lobby_cycle:
     enabled: true
-    slot: 8
-    interval-ms: 1500
+    slot: 0
+    interval-ms: 1000
     items:
-      - "selector"
-      - "spawn"
-    commands:
-      player:
-        - "title {player} actionbar &eCambiando item: {item}"
-      console:
-        - "say {player} cambió a {item} en el slot {slot}"
+      - selector
+      - spawn_item

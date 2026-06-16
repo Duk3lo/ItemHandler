@@ -16,10 +16,15 @@ public record ManagedItem(
         boolean unbreakable,
         boolean preventMove,
         boolean preventDrop,
+        boolean giveOnJoin,
+        String toggleTo,
         Integer slot,
         Integer customModelData,
         Map<Enchantment, Integer> enchantments,
         List<String> clickPlayerCommands,
-        List<String> clickConsoleCommands
+        List<String> clickConsoleCommands,
+        String clickSound,
+        float soundVolume,
+        float soundPitch
 ) {
 }

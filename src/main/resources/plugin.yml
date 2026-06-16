@@ -1,4 +1,4 @@
-name: LobbyPlugin
+name: ItemHander
 version: '${version}'
 
 main: org.astral.itemhandler.ItemHandler

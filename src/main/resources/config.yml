@@ -35,7 +35,7 @@ items:
     glow: false
     unbreakable: true
     sound:
-      type: "entity_enderman_teleport"
+      type: "entity.enderman.teleport"
       volume: 1.0
       pitch: 1.0
     commands:
